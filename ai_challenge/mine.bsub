@@ -1,0 +1,40 @@
+#!/bin/bash -l
+# Sample script for tensorflow job
+
+## Scheduler parameters ##
+
+#BSUB -J traffic_sign_vgg             # job name
+#BSUB -o traffic_sign_vgg.%J.stdout   # optional: have output written to specific file
+#BSUB -e traffic_sign_vgg.%J.stderr   # optional: have errors written to specific file
+#BSUB -q rb_ai_initiative               # optional: use highend nodes w/ Volta GPUs (default: Geforce GPUs)
+#BSUB -W 4:00                       # fill in desired wallclock time [hours,]minutes (hours are optional)
+#BSUB -n 1                          # min CPU cores,max CPU cores (max cores is optional)
+#BSUB -M 4096                       # fill in required amount of RAM (in Mbyte)
+# #BSUB -R "span[hosts=1]"          # optional: run on single host (if using more than 1 CPU cores)
+# #BSUB -R "span[ptile=16]"         # optional: fill in to specify cores per node (up to 48)
+# #BSUB -P myProject_final                # optional: fill in cluster project
+#BSUB -gpu "num=1:mode=exclusive_process:mps=no" # use 1 GPU (in explusive process mode)
+
+## Job parameters ##
+
+# Anaconda virtualenv to be used
+# Create before running the job with e.g.
+# conda create -n myEnv python=3.8 pandas && conda activate myEnv && conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch
+# python, import torch, torch.cuda.is_available() True
+# conda deactivate
+vEnv=Mine_1
+
+# Source environment (optional)
+#. /fs/applications/lsf/latest/conf/profile.lsf
+#. /fs/applications/modules/current/init/bash
+
+# Load modules
+module purge
+module load conda cudnn
+
+# Activate environment
+source activate $vEnv
+
+# Run your code here (please change, this is only an example)
+
+python traffic_det_vgg16_demo.py
